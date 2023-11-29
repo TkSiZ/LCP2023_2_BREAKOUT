@@ -1,1 +1,3 @@
-# LCP2023_2_BREAKOUT
+# Grupo LCP2023_2_BREAKOUT
+# Matheus Takashi Maruoka Vieira
+#
