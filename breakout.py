@@ -2,6 +2,7 @@
 import pygame
 import random
 pygame.init()
+pygame.display.init()
 
 COLOR_BLACK = (0, 0, 0)
 COLOR_WHITE = (255, 255, 255)
@@ -12,12 +13,11 @@ COLOR_YELLOW = (255, 255, 0)
 COLOR_BLUE = (30, 144, 225)
 COLOR_TRANSPARENT = (0, 0, 0, 0)
 
-# 14 por 8 paddles
-
-screen_width = 840
-screen_height = 1000
-size = (840, 1020)
-screen = pygame.display.set_mode(size)
+size_user = pygame.display.get_desktop_sizes()
+size_x = size_user[0][0] * 0.3385
+size_y = size_user[0][1] * 0.7222
+screen_size = (size_x, size_y)
+screen = pygame.display.set_mode(screen_size)
 pygame.display.set_caption("Breakout")
 
 # score text
@@ -40,8 +40,12 @@ player_lifes = 3
 bounce_sound_effect = pygame.mixer.Sound('assets/bounce.wav')
 
 # creating player 1
-player_1 = pygame.Rect(370, 920, 50, 20)
-player_1_waiting = pygame.Rect(0, 920, 1000, 20)
+player_1_size_y = 50
+player_1_size_x = 20
+player_1_y_spawn = screen_size[1] * 0.8974
+player_1_x_spawn = screen_size[0] / 2 - (player_1_size_x / 2)
+player_1_position = pygame.Rect(player_1_x_spawn, player_1_y_spawn, player_1_size_y, player_1_size_x)
+player_1_waiting = pygame.Rect(0, 700, 1000, 20)
 player_1_move_right = False
 player_1_move_left = False
 player_1_start_button = True
@@ -50,33 +54,41 @@ player_1_start_button = True
 # creating obstacles
 
 transparent_rectangle_obstacle = pygame.draw.rect(screen, COLOR_TRANSPARENT, (840, 1021, 55, 12))
+retangle_position_x = screen_size[0] * 0.0723
+retangle_position_y = screen_size[1] * 0.2179
+retangle_size_x = screen_size[0] * 0.0615
+retangle_size_y = screen_size[1] * 0.0141
 
 red_obstacles = []
 for n in range(2):
     for i in range(14):
-        red_obstacle_rect = pygame.Rect(i*61, 210 + n * 20, 55, 12)
+        red_obstacle_rect = pygame.Rect(i*47, retangle_position_y + n * 20, retangle_size_x, retangle_size_y)
         red_obstacles.append(red_obstacle_rect)
 
 orange_obstacles = []
 for n in range(2, 4):
     for i in range(14):
-        orange_obstacle_rect = pygame.Rect(i*61, 210 + n * 20, 55, 12)
+        orange_obstacle_rect = pygame.Rect(i*retangle_position_x, retangle_position_y + n * 20, retangle_size_x, retangle_size_y)
         orange_obstacles.append(orange_obstacle_rect)
 
 green_obstacles = []
 for n in range(4, 6):
     for i in range(14):
-        green_obstacle_rect = pygame.Rect(i*61, 210 + n * 20, 55, 12)
+        green_obstacle_rect = pygame.Rect(i*retangle_position_x, retangle_position_y + n * 20, retangle_size_x, retangle_size_y)
         green_obstacles.append(green_obstacle_rect)
 
 yellow_obstacles = []
 for n in range(6, 8):
     for i in range(14):
-        yellow_obstacle_rect = pygame.Rect(i*61, 210 + n * 20, 55, 12)
+        yellow_obstacle_rect = pygame.Rect(i*retangle_position_x, retangle_position_y + n * 20, retangle_size_x, retangle_size_y)
         yellow_obstacles.append(yellow_obstacle_rect)
 
 # creating ball
-ball = pygame.Rect(470, 500, 10, 10)
+ball_x_size = screen_size[0] * 0.0153
+ball_y_size = screen_size[1] * 0.0153
+ball_x_spawn = (screen_size[0]/2) - ball_x_size
+ball_y_spawn = (screen_size[1] * 0.4871) - ball_y_size
+ball = pygame.Rect(ball_x_spawn, 380 - ball_y_size, ball_x_size, ball_y_size)
 ball_random_x_list = [-5, 5]
 ball_spawn = False
 ball_dx = 5
@@ -94,8 +106,11 @@ game_clock = pygame.time.Clock()
 # waiting loop
 waiting_loop = pygame.time.Clock()
 
-while game_loop:
+# ball collision
 
+ball_in_paddle_range_y = player_1_position.y + (player_1_size_y / 2) >= ball.y + ball_y_size >= player_1_position.y
+
+while game_loop:
     while player_1_start_button:
 
         for event in pygame.event.get():
@@ -106,7 +121,7 @@ while game_loop:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
                     player_1_start_button = False
-                    ball = pygame.Rect(470, 500, 0, 0)
+                    ball = pygame.Rect(ball_x_spawn, ball_y_spawn, 0, 0)
                     ball_dy = 5
                     ball_dx = ball_random_x
             # checking the victory condition in waiting
@@ -115,24 +130,24 @@ while game_loop:
             # clear screen
             screen.fill(COLOR_BLACK)
 
-            # ball collision with top and bottom in waiting
+            # ball collision with top in waiting
 
-            if ball.top >= 1020:
+            if ball.top <= 0:
                 ball_dy *= -1
                 bounce_sound_effect.play()
 
             # ball collision with player in waiting
 
-            if player_1_waiting.y + 10 >= ball.y + 10 > player_1_waiting.y and player_1_waiting.x + 1000 >= ball.x >= player_1_waiting.x:
-                ball.y = player_1.y - 11
+            if ball_in_paddle_range_y and player_1_waiting.x + 1000 >= ball.x >= player_1_waiting.x:
+                ball.y = player_1_position.y - ball_y_size
                 ball_dy *= -1
                 bounce_sound_effect.play()
 
             # ball collision with the wall in waiting
-            if ball.right > 840:
+            if ball.right >= screen_size[0]:
                 ball_dx *= -1
                 bounce_sound_effect.play()
-            elif ball.left <= 10:
+            elif ball.left <= 0:
                 ball_dx *= -1
                 bounce_sound_effect.play()
 
@@ -144,21 +159,25 @@ while game_loop:
             collision_yellow = ball.collidelist(yellow_obstacles)
             if collision_yellow != -1:
                 ball_dy *= -1
+                bounce_sound_effect.play()
 
             # red obstacle collision in waiting
             collision_red = ball.collidelist(red_obstacles)
             if collision_red != -1:
                 ball_dy *= -1
+                bounce_sound_effect.play()
 
             # green obstacle collision in waiting
             collision_green = ball.collidelist(green_obstacles)
             if collision_green != -1:
                 ball_dy *= -1
+                bounce_sound_effect.play()
 
             # orange obstacle collision in waiting
             collision_orange = ball.collidelist(orange_obstacles)
             if collision_orange != -1:
                 ball_dy *= -1
+                bounce_sound_effect.play()
 
             # drawing obstacles in waiting
             for red_obstacle in red_obstacles:
@@ -206,7 +225,7 @@ while game_loop:
             if event.key == pygame.K_RCTRL:
                 ball_spawn = True
                 if ball_spawn:
-                    ball = pygame.Rect(470, 500, 10, 10)
+                    ball = pygame.Rect(ball_x_spawn, ball_y_spawn, ball_x_size, ball_y_size)
                     pygame.draw.rect(screen, COLOR_WHITE, ball)
 
     # checking the victory condition
@@ -217,41 +236,39 @@ while game_loop:
 
         # ball collision with top and bottom
         # will be the scoring or losing conditions
-        if ball.top >= 1020:
-            ball = pygame.Rect(470, 500, 0, 0)
+        if ball.top >= screen_size[1]:
+            ball = pygame.Rect(ball_x_spawn, ball_y_spawn, 0, 0)
             player_lifes -= 1
-        elif ball.bottom <= 0:
+        if ball.top <= 0:
             ball_dy *= -1
             bounce_sound_effect.play()
 
-
-
         # ball collision with player in game
 
-        if player_1.y + 10 >= ball.y + 10 > player_1.y and player_1.x + 50 >= ball.x + 5 >= player_1.x:
-            ball.y = player_1.y - 11
+        if ball_in_paddle_range_y and player_1_position.x + player_1_size_x >= ball.x + (ball_x_size / 2) >= player_1_position.x:
+            ball.y = player_1_position.y - ball_y_size
             ball_dy *= -1
             bounce_sound_effect.play()
 
         # collision with the right side
-        if player_1.y + 20 >= ball.y + 10 > player_1.y and player_1.x + 50 >= ball.x + 5 >= player_1.x + 25:
-            ball.x = player_1.x + 51
+        if ball_in_paddle_range_y and player_1_position.x + player_1_size_x >= ball.x + (ball_x_size / 2) >= player_1_position.x + (player_1_size_x / 2):
+            ball.x = player_1_size_x + 1
             ball_dy *= -1
             ball_dx *= -1
             bounce_sound_effect.play()
 
         # collision with the left side
-        if player_1.y + 20 >= ball.y + 10 > player_1.y and player_1.x + 25 >= ball.x + 5 >= player_1.x:
-            ball.x = player_1.x - 1
+        if ball_in_paddle_range_y and player_1_position.x + (player_1_size_x / 2) >= ball.x + (ball_x_size / 2) >= player_1_position.x:
+            ball.x = player_1_position.x - (ball_x_size + 1)
             ball_dy *= -1
             ball_dx *= -1
             bounce_sound_effect.play()
 
         # ball collision with the wall
-        if ball.right > 840:
+        if ball.right >= screen_size[0]:
             ball_dx *= -1
             bounce_sound_effect.play()
-        elif ball.left <= 10:
+        elif ball.left <= 0:
             ball_dx *= -1
             bounce_sound_effect.play()
 
@@ -261,23 +278,23 @@ while game_loop:
 
         # player 1 right movement
         if player_1_move_right:
-            player_1.right += 5
+            player_1_position.right += 7
         else:
-            player_1.right -= 0
+            player_1_position.right -= 0
 
         # player 1  movement
         if player_1_move_left:
-            player_1.left -= 5
+            player_1_position.left -= 7
         else:
-            player_1.left += 0
+            player_1_position.left += 0
 
         # player 1 collides with left wall
-        if player_1.left <= 0:
-            player_1.left = 0
+        if player_1_position.left <= 0:
+            player_1_position.left = 0
 
         # player 1 collides with right wall
-        elif player_1.right >= 840:
-            player_1.right = 840
+        elif player_1_position.right >= screen_size[0]:
+            player_1_position.right = screen_size[0]
 
         # yellow obstacle collision
         collision_yellow = ball.collidelist(yellow_obstacles)
@@ -326,7 +343,7 @@ while game_loop:
             pygame.draw.rect(screen, COLOR_YELLOW, yellow_obstacle)
 
         # drawing objects
-        pygame.draw.rect(screen, COLOR_BLUE, player_1)
+        pygame.draw.rect(screen, COLOR_BLUE, player_1_position)
         pygame.draw.rect(screen, COLOR_WHITE, ball)
         screen.blit(score_text, score_text_rect)
     else:
