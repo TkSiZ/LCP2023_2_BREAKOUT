@@ -2,8 +2,10 @@
 
 ### Work Group
 #### __Alunos:__
+
 - Coordinator
 Prof. Dr. Jucimar Jr.
+
 
 - Name: Matheus Takashi Maruoka Vieira
 Registration: 2315310018
