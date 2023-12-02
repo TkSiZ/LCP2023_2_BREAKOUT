@@ -4,12 +4,12 @@
 #### __Alunos:__
 - Name: Matheus Takashi Maruoka Vieira
 - Registration: 2315310018
-- Email: mtmv.snf23@gmail.com
+- Email: mtmv.snf23@gmail.com\n
 
 
 - Name: Juliana Ballin Lima
 - Registration: 2315310011
-- Email: jbl.snf23@uea.edu.br
+- Email: jbl.snf23@uea.edu.br/n
 
 
 - Name: Benicio Mozan Santos Vale
