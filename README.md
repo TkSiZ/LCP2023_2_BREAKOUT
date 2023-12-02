@@ -21,3 +21,5 @@ Email: jbl.snf23@uea.edu.br
 Registration: 2315310005
 Email: bmsv.snf23@uea.edu.br
 
+
+_The results obtained in this document were based on the electronic arcade game Breakout developed by Atari and released on May 13, 1976._
