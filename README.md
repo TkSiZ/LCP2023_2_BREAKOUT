@@ -1,7 +1,7 @@
 # Atividade 005: Breakout
 
 ## Work Group
-__Alunos:__
+### Alunos:
 Name: Matheus Takashi Maruoka Vieira
 Registration: 2315310018
 Email: mtmv.snf23@gmail.com
