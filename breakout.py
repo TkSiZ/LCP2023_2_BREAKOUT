@@ -234,11 +234,21 @@ while game_restart:
                     player_1_move_right = True
                 if event.key == pygame.K_LEFT:
                     player_1_move_left = True
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_r:
+                        ball_random_x = random.choice(ball_random_x_list)
+                        game_loop = False
+                        ball = pygame.Rect(ball_x_spawn, ball_y_spawn, 0, 0)
+                        ball_dy = 0
+                        ball_dx = 0
+                        player_1_design_and_position.x = player_1_x_spawn
+                        player_1_design_and_position.y = player_1_y_spawn
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_RIGHT:
                     player_1_move_right = False
                 if event.key == pygame.K_LEFT:
                     player_1_move_left = False
+
             if player_lifes > 0:
                 if event.type == pygame.KEYUP:
                     if event.key == pygame.K_RCTRL:
