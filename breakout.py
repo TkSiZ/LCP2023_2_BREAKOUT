@@ -5,11 +5,11 @@ pygame.display.init()
 
 COLOR_BLACK = (0, 0, 0)
 COLOR_WHITE = (255, 255, 255)
-COLOR_RED = (255, 0, 0)
-COLOR_ORANGE = (255, 165, 0)
-COLOR_GREEN = (0, 255, 0)
-COLOR_YELLOW = (255, 255, 0)
-COLOR_BLUE = (30, 144, 225)
+COLOR_RED = (179, 19, 18)
+COLOR_ORANGE = (255, 146, 9)
+COLOR_GREEN = (1, 125, 37)
+COLOR_YELLOW = (198, 196, 30)
+COLOR_BLUE = (2, 129, 198)
 COLOR_TRANSPARENT = (0, 0, 0, 0)
 
 size_user = pygame.display.get_desktop_sizes()
@@ -20,28 +20,30 @@ screen_size_x = screen_size[0]
 screen_size_y = screen_size[1]
 screen = pygame.display.set_mode(screen_size)
 pygame.display.set_caption("Breakout")
-
+#screen_size_y * 0.0641
 # score text
 score_size = screen_size_x * 0.0769
 score_font = pygame.font.Font('assets/PressStart2P.ttf', int(score_size))
-score_text = score_font.render('0', True, COLOR_WHITE, COLOR_TRANSPARENT)
+score_text = score_font.render('0', True, COLOR_WHITE)
 score_text_rect = score_text.get_rect()
-score_text_x = screen_size_x * 0.0769
-score_text_y = screen_size_y * 0.0641
-score_text_rect.topleft = (score_text_x, score_text_y)
+score_text_position_x = screen_size_x * 0.0769
+score_text_position_y = screen_size_y * 0.0935
+score_text_rect.topleft = (score_text_position_x, score_text_position_y)
 
+# game speed
+speed = 60
 
 # player lifes text
 player_lifes_size = screen_size_x * 0.0769
 player_lifes_font = pygame.font.Font('assets/PressStart2P.ttf', int(player_lifes_size))
-player_lifes_text = player_lifes_font.render('3', True, COLOR_WHITE, COLOR_TRANSPARENT)
+player_lifes_text = player_lifes_font.render('0', True, COLOR_WHITE, COLOR_TRANSPARENT)
 player_lifes_rect = player_lifes_text.get_rect()
-player_lifes_text_x = screen_size_x * 0.9076
-player_lifes_text_y = screen_size_y * 0.0641
-player_lifes_rect.topright = (player_lifes_text_x, player_lifes_text_y)
+player_lifes_text_position_x = screen_size_x * 0.9076
+player_lifes_text_position_y = screen_size_y * 0.0935
+player_lifes_rect.topright = (player_lifes_text_position_x, player_lifes_text_position_y)
 
 # player lifes
-player_lifes = 3
+player_lifes = 0
 
 # sound effects
 bounce_sound_effect = pygame.mixer.Sound('assets/bounce.wav')
@@ -62,9 +64,9 @@ waiting_for_start = True
 ball_x_size = screen_size_x * 0.0153
 ball_y_size = screen_size_y * 0.0128
 ball_x_spawn = (screen_size_x/2) - ball_x_size
-ball_y_spawn = (screen_size_y * 0.4871) + ball_y_size
-ball_x_speed = screen_size_x * 0.0069
-ball_y_speed = screen_size_y * 0.0069
+ball_y_spawn = (screen_size_y * 0.3846) + ball_y_size
+ball_x_speed = screen_size_x * 0.0061
+ball_y_speed = screen_size_y * 0.0051
 ball = pygame.Rect(ball_x_spawn, ball_y_spawn, ball_x_size, ball_y_size)
 ball_random_x_list = [-ball_x_speed, ball_x_speed]
 ball_spawn = False
@@ -91,38 +93,40 @@ waiting_loop = pygame.time.Clock()
 
 transparent_rectangle_obstacle = pygame.draw.rect(screen, COLOR_TRANSPARENT, (0, 0, 0, 0))
 retangle_position_x = screen_size_x * 0.0723
-retangle_position_y = screen_size_y * 0.2179
-retangle_size_x = screen_size_x * 0.0615
-retangle_size_y = screen_size_y * 0.0141
+retangle_position_y = screen_size_y * 0.1602
+retangle_size_x = screen_size_x * 0.0630
+retangle_size_y = screen_size_y * 0.0147
+retangles_distance_y = screen_size_y * 0.0192
 
 while game_restart:
     game_loop = True
+    game_loop_after_death = True
     waiting_for_restart = True
-    player_lifes = 3
+    player_lifes = 0
     player_design = player_1_design_and_position
 
     red_obstacles = []
     for n in range(2):
         for i in range(14):
-            red_obstacle_rect = pygame.Rect(i*retangle_position_x, retangle_position_y + n * 20, retangle_size_x, retangle_size_y)
+            red_obstacle_rect = pygame.Rect(i*retangle_position_x, retangle_position_y + n * retangles_distance_y, retangle_size_x, retangle_size_y)
             red_obstacles.append(red_obstacle_rect)
 
     orange_obstacles = []
     for n in range(2, 4):
         for i in range(14):
-            orange_obstacle_rect = pygame.Rect(i*retangle_position_x, retangle_position_y + n * 20, retangle_size_x, retangle_size_y)
+            orange_obstacle_rect = pygame.Rect(i*retangle_position_x, retangle_position_y + n * retangles_distance_y, retangle_size_x, retangle_size_y)
             orange_obstacles.append(orange_obstacle_rect)
 
     green_obstacles = []
     for n in range(4, 6):
         for i in range(14):
-            green_obstacle_rect = pygame.Rect(i*retangle_position_x, retangle_position_y + n * 20, retangle_size_x, retangle_size_y)
+            green_obstacle_rect = pygame.Rect(i*retangle_position_x, retangle_position_y + n * retangles_distance_y, retangle_size_x, retangle_size_y)
             green_obstacles.append(green_obstacle_rect)
 
     yellow_obstacles = []
     for n in range(6, 8):
         for i in range(14):
-            yellow_obstacle_rect = pygame.Rect(i*retangle_position_x, retangle_position_y + n * 20, retangle_size_x, retangle_size_y)
+            yellow_obstacle_rect = pygame.Rect(i*retangle_position_x, retangle_position_y + n * retangles_distance_y, retangle_size_x, retangle_size_y)
             yellow_obstacles.append(yellow_obstacle_rect)
 
     while game_loop:
@@ -216,7 +220,7 @@ while game_restart:
 
                 # update screen
             pygame.display.flip()
-            waiting_loop.tick(60)
+            waiting_loop.tick(speed)
 
         # game starts
 
@@ -249,7 +253,7 @@ while game_restart:
                 if event.key == pygame.K_LEFT:
                     player_1_move_left = False
 
-            if player_lifes > 0:
+            if 4 > player_lifes >= 0:
                 if event.type == pygame.KEYUP:
                     if event.key == pygame.K_RCTRL:
                         ball_spawn = True
@@ -259,9 +263,6 @@ while game_restart:
                             ball_dy = ball_y_speed
                             ball_dx = ball_random_x
                             pygame.draw.rect(screen, COLOR_WHITE, ball)
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_F1:
-                    waiting_for_start == False
 
         # start game loop
         if game_loop:
@@ -273,10 +274,11 @@ while game_restart:
             # will be the scoring or losing conditions
             if ball.top >= screen_size_y:
                 ball.y = ball_y_spawn
+                speed = 60
                 ball_dy = 0
                 ball_dx = 0
                 ball = pygame.Rect(ball_x_spawn, ball_y_spawn, 0, 0)
-                player_lifes -= 1
+                player_lifes += 1
             if ball.top <= 0:
                 ball.y = 1
                 ball_dy *= -1
@@ -294,6 +296,7 @@ while game_restart:
             if ball_in_paddle_range_y and (ball_in_top_paddle_x_bottomleft or ball_in_top_paddle_x_bottomright):
                 ball.y = player_1_design_and_position.y - (ball_y_size - 3)
                 ball_dy *= -1
+                speed += 5
                 bounce_sound_effect.play()
 
             # collision with the right side
@@ -403,7 +406,7 @@ while game_restart:
                 ball_dy *= -1
                 bounce_sound_effect.play()
 
-        if player_lifes <= 0:
+        if player_lifes >= 4:
             while waiting_for_restart:
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
@@ -413,6 +416,7 @@ while game_restart:
                         game_loop = False
                     if event.type == pygame.KEYDOWN:
                         if event.key == pygame.K_r:
+                            score = 0
                             ball_random_x = random.choice(ball_random_x_list)
                             game_loop_after_death = False
                             waiting_for_restart = False
@@ -433,10 +437,10 @@ while game_restart:
 
                     # update screen after death
                 pygame.display.flip()
-                waiting_loop.tick(60)
+                waiting_loop.tick(speed)
 
         # update screen
         pygame.display.flip()
-        game_clock.tick(60)
+        game_clock.tick(speed)
 
 pygame.quit()
