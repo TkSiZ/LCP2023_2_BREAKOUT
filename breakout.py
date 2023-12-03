@@ -56,44 +56,7 @@ player_1_position_and_design = pygame.Rect(player_1_x_spawn, player_1_y_spawn, p
 player_1_waiting = pygame.Rect(0, player_1_y_spawn, 1000, 20)
 player_1_move_right = False
 player_1_move_left = False
-<<<<<<< HEAD
 waiting_for_start = True
-=======
-player_1_start_button = True
-
-
-# creating obstacles
-
-transparent_rectangle_obstacle = pygame.draw.rect(screen, COLOR_TRANSPARENT, (840, 1021, 55, 12))
-retangle_position_x = screen_size[0] * 0.0723
-retangle_position_y = screen_size[1] * 0.2179
-retangle_size_x = screen_size[0] * 0.0615
-retangle_size_y = screen_size[1] * 0.0141
-
-red_obstacles = []
-for n in range(2):
-    for i in range(14):
-        red_obstacle_rect = pygame.Rect(i*retangle_position_x, retangle_position_y + n * 20, retangle_size_x, retangle_size_y)
-        red_obstacles.append(red_obstacle_rect)
-
-orange_obstacles = []
-for n in range(2, 4):
-    for i in range(14):
-        orange_obstacle_rect = pygame.Rect(i*retangle_position_x, retangle_position_y + n * 20, retangle_size_x, retangle_size_y)
-        orange_obstacles.append(orange_obstacle_rect)
-
-green_obstacles = []
-for n in range(4, 6):
-    for i in range(14):
-        green_obstacle_rect = pygame.Rect(i*retangle_position_x, retangle_position_y + n * 20, retangle_size_x, retangle_size_y)
-        green_obstacles.append(green_obstacle_rect)
-
-yellow_obstacles = []
-for n in range(6, 8):
-    for i in range(14):
-        yellow_obstacle_rect = pygame.Rect(i*retangle_position_x, retangle_position_y + n * 20, retangle_size_x, retangle_size_y)
-        yellow_obstacles.append(yellow_obstacle_rect)
->>>>>>> ae4db026873a4227b24a5ccf7b3ce1907e3722a3
 
 # creating ball
 ball_x_size = screen_size_x * 0.0153
