@@ -1,10 +1,8 @@
 ## Atividade 005: Breakout
-
-### Work Group
-#### __Alunos:__
-
 - Coordinator
 Prof. Dr. Jucimar Jr.
+### Work Group
+#### __Alunos:__
 
 
 - Name: Matheus Takashi Maruoka Vieira
