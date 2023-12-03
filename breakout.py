@@ -1,4 +1,3 @@
-
 import pygame
 import random
 pygame.init()
@@ -77,7 +76,7 @@ ball_dy = ball_y_speed
 score = 000
 SCORE_MAX = 896
 
-#game restart
+# game restart
 game_restart = True
 
 # game loop
@@ -217,7 +216,6 @@ while game_restart:
             pygame.display.flip()
             waiting_loop.tick(60)
 
-
         # game starts
 
         for event in pygame.event.get():
@@ -226,7 +224,6 @@ while game_restart:
                 game_loop = False
 
             #  keystroke events
-
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RIGHT:
@@ -271,7 +268,6 @@ while game_restart:
                 ball.y = 1
                 ball_dy *= -1
                 bounce_sound_effect.play()
-
 
             # ball collision with player in game
 
@@ -481,7 +477,6 @@ while game_restart:
                     # update screen after death
                 pygame.display.flip()
                 waiting_loop.tick(60)
-
 
         # update screen
         pygame.display.flip()
