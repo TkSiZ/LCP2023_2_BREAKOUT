@@ -62,7 +62,7 @@ retangle_size_y = screen_size[1] * 0.0141
 red_obstacles = []
 for n in range(2):
     for i in range(14):
-        red_obstacle_rect = pygame.Rect(i*47, retangle_position_y + n * 20, retangle_size_x, retangle_size_y)
+        red_obstacle_rect = pygame.Rect(i*retangle_position_x, retangle_position_y + n * 20, retangle_size_x, retangle_size_y)
         red_obstacles.append(red_obstacle_rect)
 
 orange_obstacles = []
