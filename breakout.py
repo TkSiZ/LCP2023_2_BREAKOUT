@@ -20,7 +20,7 @@ screen_size_x = screen_size[0]
 screen_size_y = screen_size[1]
 screen = pygame.display.set_mode(screen_size)
 pygame.display.set_caption("Breakout")
-#screen_size_y * 0.0641
+
 # score text
 score_size = screen_size_x * 0.0769
 score_font = pygame.font.Font('assets/PressStart2P.ttf', int(score_size))
@@ -92,11 +92,17 @@ waiting_loop = pygame.time.Clock()
 # creating obstacles
 
 transparent_rectangle_obstacle = pygame.draw.rect(screen, COLOR_TRANSPARENT, (0, 0, 0, 0))
-retangle_position_x = screen_size_x * 0.0723
-retangle_position_y = screen_size_y * 0.1602
-retangle_size_x = screen_size_x * 0.0630
-retangle_size_y = screen_size_y * 0.0147
-retangles_distance_y = screen_size_y * 0.0192
+retan_pos_x = screen_size_x * 0.0723
+retan_pos_y = screen_size_y * 0.1602
+retan_size_x = screen_size_x * 0.0630
+retan_size_y = screen_size_y * 0.0147
+retan_dist_y = screen_size_y * 0.0192
+
+
+def ball_in_screen(ball_, screen_):
+    if ball_ >= screen_:
+        return ball_ >= screen_
+
 
 while game_restart:
     game_loop = True
@@ -108,26 +114,26 @@ while game_restart:
     red_obstacles = []
     for n in range(2):
         for i in range(14):
-            red_obstacle_rect = pygame.Rect(i*retangle_position_x, retangle_position_y + n * retangles_distance_y, retangle_size_x, retangle_size_y)
-            red_obstacles.append(red_obstacle_rect)
+            red_obj_rect = pygame.Rect(i * retan_pos_x, retan_pos_y + n * retan_dist_y, retan_size_x, retan_size_y)
+            red_obstacles.append(red_obj_rect)
 
     orange_obstacles = []
     for n in range(2, 4):
         for i in range(14):
-            orange_obstacle_rect = pygame.Rect(i*retangle_position_x, retangle_position_y + n * retangles_distance_y, retangle_size_x, retangle_size_y)
-            orange_obstacles.append(orange_obstacle_rect)
+            orange_obj_rect = pygame.Rect(i * retan_pos_x, retan_pos_y + n * retan_dist_y, retan_size_x, retan_size_y)
+            orange_obstacles.append(orange_obj_rect)
 
     green_obstacles = []
     for n in range(4, 6):
         for i in range(14):
-            green_obstacle_rect = pygame.Rect(i*retangle_position_x, retangle_position_y + n * retangles_distance_y, retangle_size_x, retangle_size_y)
-            green_obstacles.append(green_obstacle_rect)
+            green_obj_rect = pygame.Rect(i * retan_pos_x, retan_pos_y + n * retan_dist_y, retan_size_x, retan_size_y)
+            green_obstacles.append(green_obj_rect)
 
     yellow_obstacles = []
     for n in range(6, 8):
         for i in range(14):
-            yellow_obstacle_rect = pygame.Rect(i*retangle_position_x, retangle_position_y + n * retangles_distance_y, retangle_size_x, retangle_size_y)
-            yellow_obstacles.append(yellow_obstacle_rect)
+            yellow_obj_rect = pygame.Rect(i * retan_pos_x, retan_pos_y + n * retan_dist_y, retan_size_x, retan_size_y)
+            yellow_obstacles.append(yellow_obj_rect)
 
     while game_loop:
         while waiting_for_start:
@@ -157,7 +163,8 @@ while game_restart:
                     bounce_sound_effect.play()
 
                 # ball collision with player in waiting
-                ball_in_paddle_range_y = player_1_design_and_position.y + (player_1_size_y / 2) >= ball.y + ball_y_size >= player_1_design_and_position.y
+                player_range_y = player_1_design_and_position.y + (player_1_size_y / 2)
+                ball_in_paddle_range_y = player_range_y >= ball.y + ball_y_size >= player_1_design_and_position.y
 
                 if ball_in_paddle_range_y and player_1_waiting.x + 1000 >= ball.x >= player_1_waiting.x:
                     ball.y = player_1_design_and_position.y - ball_y_size
@@ -165,7 +172,8 @@ while game_restart:
                     bounce_sound_effect.play()
 
                 # ball collision with the wall in waiting
-                if ball.right >= screen_size_x:
+
+                if ball_in_screen(ball.x + ball_x_size, screen_size_x):
                     ball.x = screen_size_x - (ball_x_size + 1)
                     ball_dx *= -1
                     bounce_sound_effect.play()
@@ -179,6 +187,7 @@ while game_restart:
                 ball.y += ball_dy
 
                 # yellow obstacle collision in waiting
+
                 collision_yellow = ball.collidelist(yellow_obstacles)
                 if collision_yellow != -1:
                     ball_dy *= -1
@@ -204,13 +213,13 @@ while game_restart:
 
                 # drawing obstacles in waiting
                 for red_obstacle in red_obstacles:
-                        pygame.draw.rect(screen, COLOR_RED, red_obstacle)
+                    pygame.draw.rect(screen, COLOR_RED, red_obstacle)
                 for orange_obstacle in orange_obstacles:
-                        pygame.draw.rect(screen, COLOR_ORANGE, orange_obstacle)
+                    pygame.draw.rect(screen, COLOR_ORANGE, orange_obstacle)
                 for green_obstacle in green_obstacles:
-                        pygame.draw.rect(screen, COLOR_GREEN, green_obstacle)
+                    pygame.draw.rect(screen, COLOR_GREEN, green_obstacle)
                 for yellow_obstacle in yellow_obstacles:
-                        pygame.draw.rect(screen, COLOR_YELLOW, yellow_obstacle)
+                    pygame.draw.rect(screen, COLOR_YELLOW, yellow_obstacle)
 
                 # drawing objects in waiting
                 pygame.draw.rect(screen, COLOR_BLUE, player_1_waiting)
@@ -285,13 +294,20 @@ while game_restart:
                 bounce_sound_effect.play()
 
             # ball collision with player in game
+            ball_in_range_y = player_1_design_and_position.y
+            ball_in_range_x = player_1_design_and_position.x
+            ball_in_top_range_x = (player_1_design_and_position.y + player_1_size_y/2)
+            ball_in_side_range_y = player_1_design_and_position.y + player_1_size_y
+            ball_in_bottomright = player_1_design_and_position.x + player_1_size_x
+            ball_in_right_x = player_1_design_and_position.x + player_1_size_x
+            ball_in_left_x = player_1_design_and_position.x + (player_1_size_x/2)
 
-            ball_in_paddle_range_y = player_1_design_and_position.y <= ball.y + ball_y_size < (player_1_design_and_position.y + player_1_size_y/2)
-            ball_in_side_paddle_range_y = player_1_design_and_position.y < ball.y + (ball_y_size/2) <= player_1_design_and_position.y + player_1_size_y
-            ball_in_top_paddle_x_bottomleft = player_1_design_and_position.x < ball.x < player_1_design_and_position.x + player_1_size_x
-            ball_in_top_paddle_x_bottomright = player_1_design_and_position.x < ball.x + ball_x_size < player_1_design_and_position.x + player_1_size_x
-            ball_in_right_paddle_side_x = player_1_design_and_position.x + (player_1_size_x/2) <= ball.x <= player_1_design_and_position.x + player_1_size_x
-            ball_in_left_paddle_side_x = player_1_design_and_position.x <= ball.x + ball_x_size <= player_1_design_and_position.x + (player_1_size_x/2)
+            ball_in_paddle_range_y = ball_in_range_y <= ball.y + ball_y_size < ball_in_top_range_x
+            ball_in_side_paddle_range_y = ball_in_range_y < ball.y + (ball_y_size/2) <= ball_in_paddle_range_y
+            ball_in_top_paddle_x_bottomleft = ball_in_range_x < ball.x < ball_in_range_x + player_1_size_x
+            ball_in_top_paddle_x_bottomright = ball_in_range_x < ball.x + ball_x_size < ball_in_bottomright
+            ball_in_right_paddle_side_x = ball_in_range_x + (player_1_size_x/2) <= ball.x <= ball_in_right_x
+            ball_in_left_paddle_side_x = ball_in_range_x <= ball.x + ball_x_size <= ball_in_left_x
 
             if ball_in_paddle_range_y and (ball_in_top_paddle_x_bottomleft or ball_in_top_paddle_x_bottomright):
                 ball.y = player_1_design_and_position.y - (ball_y_size - 3)
@@ -399,7 +415,8 @@ while game_restart:
             screen.blit(score_text, score_text_rect)
             screen.blit(player_lifes_text, player_lifes_rect)
         if score >= SCORE_MAX:
-            ball_in_paddle_range_y = player_1_waiting.y + (player_1_size_y / 2) >= ball.y + ball_y_size >= player_1_waiting.y
+            ball_in_y = ball.y + ball_y_size
+            ball_in_paddle_range_y = player_1_waiting.y + (player_1_size_y / 2) >= ball_in_y >= player_1_waiting.y
             player_design = player_1_waiting
             if ball_in_paddle_range_y and player_1_waiting.x + 1000 >= ball.x >= player_1_waiting.x:
                 ball.y = player_1_design_and_position.y - ball_y_size
