@@ -110,6 +110,7 @@ while game_restart:
     waiting_for_restart = True
     player_lifes = 0
     player_design = player_1
+    score = 0
 
     red_obstacles = []
     for n in range(2):
