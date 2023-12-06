@@ -54,7 +54,7 @@ player_1_size_y = screen_size_y * 0.0256
 player_1_size_x = screen_size_x * 0.0769
 player_1_y_spawn = screen_size_y * 0.8974
 player_1_x_spawn = screen_size_x / 2 - (player_1_size_x / 2)
-player_1_design_and_position = pygame.Rect(player_1_x_spawn, player_1_y_spawn, player_1_size_x, player_1_size_y)
+player_1 = pygame.Rect(player_1_x_spawn, player_1_y_spawn, player_1_size_x, player_1_size_y)
 player_1_waiting = pygame.Rect(0, player_1_y_spawn, 1000, 20)
 player_1_move_right = False
 player_1_move_left = False
@@ -109,7 +109,7 @@ while game_restart:
     game_loop_after_death = True
     waiting_for_restart = True
     player_lifes = 0
-    player_design = player_1_design_and_position
+    player_design = player_1
 
     red_obstacles = []
     for n in range(2):
@@ -163,11 +163,11 @@ while game_restart:
                     bounce_sound_effect.play()
 
                 # ball collision with player in waiting
-                player_range_y = player_1_design_and_position.y + (player_1_size_y / 2)
-                ball_in_paddle_range_y = player_range_y >= ball.y + ball_y_size >= player_1_design_and_position.y
+                player_range_y = player_1.y + (player_1_size_y / 2)
+                ball_in_paddle_range_y = player_range_y >= ball.y + ball_y_size >= player_1.y
 
                 if ball_in_paddle_range_y and player_1_waiting.x + 1000 >= ball.x >= player_1_waiting.x:
-                    ball.y = player_1_design_and_position.y - ball_y_size
+                    ball.y = player_1.y - ball_y_size
                     ball_dy *= -1
                     bounce_sound_effect.play()
 
@@ -254,8 +254,8 @@ while game_restart:
                         ball = pygame.Rect(ball_x_spawn, ball_y_spawn, 0, 0)
                         ball_dy = 0
                         ball_dx = 0
-                        player_1_design_and_position.x = player_1_x_spawn
-                        player_1_design_and_position.y = player_1_y_spawn
+                        player_1.x = player_1_x_spawn
+                        player_1.y = player_1_y_spawn
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_RIGHT:
                     player_1_move_right = False
@@ -294,37 +294,29 @@ while game_restart:
                 bounce_sound_effect.play()
 
             # ball collision with player in game
-            ball_in_range_y = player_1_design_and_position.y
-            ball_in_range_x = player_1_design_and_position.x
-            ball_in_top_range_x = (player_1_design_and_position.y + player_1_size_y/2)
-            ball_in_side_range_y = player_1_design_and_position.y + player_1_size_y
-            ball_in_bottomright = player_1_design_and_position.x + player_1_size_x
-            ball_in_right_x = player_1_design_and_position.x + player_1_size_x
-            ball_in_left_x = player_1_design_and_position.x + (player_1_size_x/2)
-
-            ball_in_paddle_range_y = ball_in_range_y <= ball.y + ball_y_size < ball_in_top_range_x
-            ball_in_side_paddle_range_y = ball_in_range_y < ball.y + (ball_y_size/2) <= ball_in_paddle_range_y
-            ball_in_top_paddle_x_bottomleft = ball_in_range_x < ball.x < ball_in_range_x + player_1_size_x
-            ball_in_top_paddle_x_bottomright = ball_in_range_x < ball.x + ball_x_size < ball_in_bottomright
-            ball_in_right_paddle_side_x = ball_in_range_x + (player_1_size_x/2) <= ball.x <= ball_in_right_x
-            ball_in_left_paddle_side_x = ball_in_range_x <= ball.x + ball_x_size <= ball_in_left_x
+            ball_in_paddle_range_y = player_1.y <= ball.y + ball_y_size < (player_1.y + player_1_size_y / 2)
+            ball_in_side_paddle_range_y = player_1.y < ball.y + (ball_y_size / 2) <= player_1.y + player_1_size_y
+            ball_in_top_paddle_x_bottomleft = player_1.x < ball.x + ball_x_size/2 < player_1.x + player_1_size_x
+            ball_in_top_paddle_x_bottomright = player_1.x < ball.x + ball_x_size/2 < player_1.x + player_1_size_x
+            ball_in_right_paddle_side_x = player_1.x + (player_1_size_x / 2) <= ball.x <= player_1.x + player_1_size_x
+            ball_in_left_paddle_side_x = player_1.x <= ball.x + ball_x_size <= player_1.x + (player_1_size_x / 2)
 
             if ball_in_paddle_range_y and (ball_in_top_paddle_x_bottomleft or ball_in_top_paddle_x_bottomright):
-                ball.y = player_1_design_and_position.y - (ball_y_size - 3)
+                ball.y = player_1.y - (ball_y_size - 3)
                 ball_dy *= -1
                 speed += 5
                 bounce_sound_effect.play()
 
             # collision with the right side
             if ball_in_side_paddle_range_y and ball_in_right_paddle_side_x:
-                ball.x = player_1_design_and_position.x + player_1_size_x + 3
+                ball.x = player_1.x + player_1_size_x + 3
                 ball_dy *= -1
                 ball_dx *= -1
                 bounce_sound_effect.play()
 
             # collision with the left side
             if ball_in_side_paddle_range_y and ball_in_left_paddle_side_x:
-                ball.x = player_1_design_and_position.x - (ball_x_size + 3)
+                ball.x = player_1.x - (ball_x_size + 3)
                 ball_dy *= -1
                 ball_dx *= -1
                 bounce_sound_effect.play()
@@ -345,23 +337,23 @@ while game_restart:
 
             # player 1 right movement
             if player_1_move_right:
-                player_1_design_and_position.right += player_speed
+                player_1.right += player_speed
             else:
-                player_1_design_and_position.right -= 0
+                player_1.right -= 0
 
             # player 1  movement
             if player_1_move_left:
-                player_1_design_and_position.left -= player_speed
+                player_1.left -= player_speed
             else:
-                player_1_design_and_position.left += 0
+                player_1.left += 0
 
             # player 1 collides with left wall
-            if player_1_design_and_position.left <= 0:
-                player_1_design_and_position.left = 0
+            if player_1.left <= 0:
+                player_1.left = 0
 
             # player 1 collides with right wall
-            elif player_1_design_and_position.right >= screen_size_x:
-                player_1_design_and_position.right = screen_size_x
+            elif player_1.right >= screen_size_x:
+                player_1.right = screen_size_x
 
             # yellow obstacle collision
             collision_yellow = ball.collidelist(yellow_obstacles)
@@ -419,7 +411,7 @@ while game_restart:
             ball_in_paddle_range_y = player_1_waiting.y + (player_1_size_y / 2) >= ball_in_y >= player_1_waiting.y
             player_design = player_1_waiting
             if ball_in_paddle_range_y and player_1_waiting.x + 1000 >= ball.x >= player_1_waiting.x:
-                ball.y = player_1_design_and_position.y - ball_y_size
+                ball.y = player_1.y - ball_y_size
                 ball_dy *= -1
                 bounce_sound_effect.play()
 
@@ -441,8 +433,8 @@ while game_restart:
                             ball = pygame.Rect(ball_x_spawn, ball_y_spawn, 0, 0)
                             ball_dy = 0
                             ball_dx = 0
-                            player_1_design_and_position.x = player_1_x_spawn
-                            player_1_design_and_position.y = player_1_y_spawn
+                            player_1.x = player_1_x_spawn
+                            player_1.y = player_1_y_spawn
 
                 # looping game death
                 if game_loop_after_death:
